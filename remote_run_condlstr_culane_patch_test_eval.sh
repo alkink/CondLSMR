@@ -23,6 +23,7 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 export PYTHONUNBUFFERED=1
+export PYTORCH_ALLOC_CONF="${PYTORCH_ALLOC_CONF:-max_split_size_mb:128}"
 
 python -m py_compile \
   tools/test.py \

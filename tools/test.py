@@ -10,7 +10,6 @@ import torch.cuda.amp as amp
 import torch.distributed as dist
 import torch.backends.cuda as cuda
 import torch.backends.cudnn as cudnn
-import torch.utils.tensorboard as tensorboard
 import numpy as np
 from contextlib import suppress
 from modeling import models
@@ -24,6 +23,11 @@ from utils.flop_count import flop_count
 # from utils.torch2tRt import torch2trt
 # from utils.torch2onnx import torch2onnx
 # from utils.onnx2tRt import onnx2trt
+
+try:
+    import torch.utils.tensorboard as tensorboard
+except ImportError:
+    tensorboard = None
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -105,9 +109,13 @@ def main(args):
         # Redirect print to both console and log file
         sys.stdout = Logger(os.path.join(args.logs_dir, 'log.txt'))
         # Create tensorboard writer
-        tensorboard_path = os.path.join(args.logs_dir, 'tensorboard')
-        os.makedirs(tensorboard_path, exist_ok=True)
-        tb_writer = tensorboard.SummaryWriter(tensorboard_path)
+        if tensorboard is not None:
+            tensorboard_path = os.path.join(args.logs_dir, 'tensorboard')
+            os.makedirs(tensorboard_path, exist_ok=True)
+            tb_writer = tensorboard.SummaryWriter(tensorboard_path)
+        else:
+            print('tensorboard not installed; disabling tensorboard logging')
+            tb_writer = None
     else:
         tb_writer = None
 
