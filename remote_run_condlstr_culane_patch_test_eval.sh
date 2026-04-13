@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "$0")" && pwd)}"
-DATA_ROOT="${CONDLSTR_DATA_DIR:-/workspace/datasets}"
+DATA_ROOT="${CONDLSTR_DATA_DIR:-/workspace/CULane}"
 LOGS_NAME="${1:-culane_patch_enc24x42_1600x640_bs1}"
 LOGS_DIR="${CONDLSTR_LOGS_DIR:-${REPO_ROOT}/logs/${LOGS_NAME}}"
 TEST_DIR="${CONDLSTR_TEST_DIR:-${REPO_ROOT}/output/${LOGS_NAME}}"
@@ -51,8 +51,8 @@ python -u tools/test.py \
 
 python tools/metrics/lane/culane.py \
   --pred_dir "${TEST_DIR}" \
-  --anno_dir "${DATA_ROOT}/culane" \
-  --list "${DATA_ROOT}/culane/list/test.txt" \
+  --anno_dir "${DATA_ROOT}" \
+  --list "${DATA_ROOT}/list/test.txt" \
   --width 30 \
   --official \
   --translate_v2 \

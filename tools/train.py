@@ -26,6 +26,32 @@ except ImportError:
     tensorboard = None
 
 
+def _resolve_data_root(base_dir, dataset):
+    dataset = dataset.replace('_pipe', '')
+    candidates = [os.path.join(base_dir, dataset)]
+    if dataset == 'culane':
+        candidates.extend([
+            os.path.join(base_dir, 'CULane'),
+            os.path.join(base_dir, 'culane'),
+            base_dir,
+        ])
+        markers = ['list/train_gt.txt', 'train_gt.txt', 'list/test.txt', 'test.txt']
+    else:
+        candidates.append(base_dir)
+        markers = []
+
+    seen = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if not os.path.isdir(candidate):
+            continue
+        if not markers or any(os.path.exists(os.path.join(candidate, marker)) for marker in markers):
+            return candidate
+    return os.path.join(base_dir, dataset)
+
+
 def argument_parser():
     parser = argparse.ArgumentParser(description='HDMapNet with Pytorch Implementation')
     parser.add_argument('--gpu-ids', type=str, default='0')
@@ -133,7 +159,8 @@ def main(args):
         tb_writer = None
 
     # Create dataloaders
-    data_root = os.path.join(args.data_dir, args.dataset.replace('_pipe', ''))
+    data_root = _resolve_data_root(args.data_dir, args.dataset)
+    print('resolved data_root:', data_root)
 
     transform_kw = dict(root=data_root, version=args.version)
     if getattr(args, 'img_size', None) and len(args.img_size) == 2:

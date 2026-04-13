@@ -1,8 +1,14 @@
 import torch.distributed as dist
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler, \
     SequentialSampler, default_collate
-from torchdata.dataloader2 import DataLoader2, MultiProcessingReadingService, \
-    DistributedReadingService, SequentialReadingService
+try:
+    from torchdata.dataloader2 import DataLoader2, MultiProcessingReadingService, \
+        DistributedReadingService, SequentialReadingService
+except ImportError:
+    DataLoader2 = None
+    MultiProcessingReadingService = None
+    DistributedReadingService = None
+    SequentialReadingService = None
 from .samplers import *
 
 
@@ -72,6 +78,10 @@ def mix_parquet_dataloader(dataset, batch_size, train=True, distributed=False, n
 
 def pipe_dataloader(datapipe, batch_size, train=True, distributed=False, num_workers=4, prefetch_factor=2,
                     collate_fn=default_collate, **kwargs):
+    if DataLoader2 is None:
+        raise ImportError(
+            "pipe_dataloader requires torchdata.dataloader2, but torchdata is not installed."
+        )
     if isinstance(batch_size, list):
         batch_size = batch_size[0]
 

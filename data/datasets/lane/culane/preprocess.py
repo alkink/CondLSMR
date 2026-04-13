@@ -44,7 +44,9 @@ def lane_data_prep(root_path,
 
     train_data_infos = []
     for key, fpath in DATASETS_TRAIN.items():
-        file_path = os.path.join(root_path, fpath)
+        file_path = _resolve_list_path(root_path, osp.join('list', fpath), fallback=fpath)
+        if file_path is None:
+            raise FileNotFoundError('Could not find list file for {} under {}'.format(fpath, root_path))
         train_data_samples = []
         with open(file_path, "r") as f:
             lines = f.readlines()
@@ -60,7 +62,9 @@ def lane_data_prep(root_path,
 
     val_data_infos = []
     for key, fpath in DATASETS_VAL.items():
-        file_path = os.path.join(root_path, fpath)
+        file_path = _resolve_list_path(root_path, osp.join('list', fpath), fallback=fpath)
+        if file_path is None:
+            raise FileNotFoundError('Could not find list file for {} under {}'.format(fpath, root_path))
         val_data_samples = []
         with open(file_path, "r") as f:
             lines = f.readlines()

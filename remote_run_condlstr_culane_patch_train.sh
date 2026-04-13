@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "$0")" && pwd)}"
-DATA_ROOT="${CONDLSTR_DATA_DIR:-/workspace/datasets}"
+DATA_ROOT="${CONDLSTR_DATA_DIR:-/workspace/CULane}"
 LOGS_NAME="${2:-culane_patch_enc24x42_1600x640_bs1}"
 LOGS_DIR="${CONDLSTR_LOGS_DIR:-${REPO_ROOT}/logs/${LOGS_NAME}}"
 MAX_STEPS="${1:-150000}"
