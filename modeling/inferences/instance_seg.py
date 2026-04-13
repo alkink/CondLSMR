@@ -1,6 +1,9 @@
 import os
 import cv2
-import mmcv
+try:
+    import mmcv
+except ImportError:
+    from utils import mmcv_shim as mmcv
 import torch
 import numpy as np
 import os.path as osp

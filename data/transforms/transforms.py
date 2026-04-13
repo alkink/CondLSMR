@@ -1,5 +1,8 @@
 import math
-import mmcv
+try:
+    import mmcv
+except ImportError:
+    from utils import mmcv_shim as mmcv
 import torch
 import random
 import numbers
@@ -1805,4 +1808,3 @@ class Identity(object):
 
     def __call__(self, results):
         return results
-

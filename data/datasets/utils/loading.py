@@ -1,6 +1,9 @@
 import io
 import os
-import mmcv
+try:
+    import mmcv
+except ImportError:
+    from utils import mmcv_shim as mmcv
 import jsonlines
 import numpy as np
 from PIL import Image, ImageFile

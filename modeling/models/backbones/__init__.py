@@ -1,35 +1,19 @@
-from .dla import DLAWrapper
-from .hrnet import HRNet
-from .second import SECOND
-from .resnet import ResNet
-from .regnet import RegNet
-from .resnext import ResNeXt
-from .stdcnet import STDCNet
-from .shufflenet import ShuffleNet
-from .efficientnet import EfficientNet
-from .transformer import Transformer
-from .swap_transformer import SwapTransformer
-from .swin_transformer import SwinTransformer
-# from .deform_transformer import DeformTransformer
-# from .deform_transformer_v2 import DeformTransformerV2
+import importlib
 
 
 __factory = {
-    'HRNet':               HRNet,
-    'ResNet':              ResNet,
-    'RegNet':              RegNet,
-    'ResNeXt':             ResNeXt,
-    'STDCNet':             STDCNet,
-    'DLAWrapper':          DLAWrapper,
-    'ShuffleNet':          ShuffleNet,
-    'SECOND':              SECOND,
-    'EfficientNet':        EfficientNet,
-    'Transformer':         Transformer,
-    'SwapTransformer':     SwapTransformer,
-    'SwinTransformer':     SwinTransformer,
-    # 'MLPMixer':            MLPMixer,
-    # 'DeformTransformer':   DeformTransformer,
-    # 'DeformTransformerV2': DeformTransformerV2
+    'HRNet': ('modeling.models.backbones.hrnet', 'HRNet'),
+    'ResNet': ('modeling.models.backbones.resnet', 'ResNet'),
+    'RegNet': ('modeling.models.backbones.regnet', 'RegNet'),
+    'ResNeXt': ('modeling.models.backbones.resnext', 'ResNeXt'),
+    'STDCNet': ('modeling.models.backbones.stdcnet', 'STDCNet'),
+    'DLAWrapper': ('modeling.models.backbones.dla', 'DLAWrapper'),
+    'ShuffleNet': ('modeling.models.backbones.shufflenet', 'ShuffleNet'),
+    'SECOND': ('modeling.models.backbones.second', 'SECOND'),
+    'EfficientNet': ('modeling.models.backbones.efficientnet', 'EfficientNet'),
+    'Transformer': ('modeling.models.backbones.transformer', 'Transformer'),
+    'SwapTransformer': ('modeling.models.backbones.swap_transformer', 'SwapTransformer'),
+    'SwinTransformer': ('modeling.models.backbones.swin_transformer', 'SwinTransformer'),
 }
 
 
@@ -50,5 +34,7 @@ def create(name=None, *args, **kwargs):
         name = kwargs.pop('name')
     if name not in __factory:
         raise KeyError("Unknown model:", name)
-    return __factory[name](*args, **kwargs)
-
+    module_name, class_name = __factory[name]
+    module = importlib.import_module(module_name)
+    factory = getattr(module, class_name)
+    return factory(*args, **kwargs)
